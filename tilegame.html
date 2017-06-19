@@ -145,7 +145,7 @@
         {
           this.tileFrom   = [1,1];
           this.tileTo     = [1,1];
-          this.dimensions = [30,30];  
+          this.dimensions = [35,35];  
           this.timeMoved  = 0;  //current time take after moving
           this.position   = [45,45]; // in pixel
           this.delayMove  = 200;  //time taken to travel bw tiles
@@ -216,11 +216,25 @@
     coin.src = "coin-sprite-animation-sprite-sheet.png";
         function drawcoin(x,y)
         {
-            context.clearRect(viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,40,40);
+            context.clearRect(viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,tileWidth,tileHeight);
             context.fillStyle = "black";
-            context.fillRect(viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,40,40);
-               context.drawImage(coin,frame,0,44,40,viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,40,40);
+            context.fillRect(viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,tileWidth,tileHeight);
+               context.drawImage(coin,frame,0,44,40,viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,tileWidth,tileHeight);
             frame = (frame+44)%440;
+        }
+        //hero
+    var frameAsh = 0,directionFrame = 0;
+    var ash = new Image();
+    ash.src = "ashsprite.png";
+        function drawAsh()
+        {
+          var currentTime = Date.now();
+          context.clearRect(viewport.offset[0]+player.position[0],viewport.offset[1]+player.position[1],player.dimensions[0],player.dimensions[1]);
+          context.drawImage(ash,frameAsh,directionFrame,68,72,viewport.offset[0]+player.position[0],viewport.offset[1]+player.position[1],player.dimensions[0],player.dimensions[1]);
+          if(player.updateMotion(currentTime))
+          {
+           frameAsh = (frameAsh+68)%272;
+          }
         }
         function scoreUpdate()
         {
@@ -252,14 +266,26 @@
           {  
             //up and down 
             if(keyDown[38]&&map[indexCalculation(player.tileFrom[0],player.tileFrom[1]-1)])
-              {player.tileTo[1]-=1;}
+              {
+                player.tileTo[1]-=1;
+                directionFrame = 216;
+              }
             else if(keyDown[40]&&map[indexCalculation(player.tileFrom[0],player.tileFrom[1]+1)])
-                   {player.tileTo[1]+=1;}
+                   {
+                    player.tileTo[1]+=1;
+                    directionFrame = 0;
+                   }
             //left and right
             if(keyDown[37]&&map[indexCalculation(player.tileFrom[0]-1,player.tileFrom[1])])
-              {player.tileTo[0]-=1;}
+              {
+                player.tileTo[0]-=1;
+                directionFrame = 72;
+              }
             else if(keyDown[39]&&map[indexCalculation(player.tileFrom[0]+1,player.tileFrom[1])])
-                  {player.tileTo[0]+=1;}
+                  {
+                    player.tileTo[0]+=1;
+                    directionFrame = 144;
+                  }
             if(player.tileFrom[0]!=player.tileTo[0]||player.tileFrom[1]!=player.tileTo[1])
               {player.timeMoved=currentTime;}
           }
@@ -283,11 +309,11 @@
                    }
                 }
           }
-          context.fillStyle = "green";
-          context.fillRect(viewport.offset[0]+18*tileWidth,viewport.offset[1]+16*tileWidth,tileWidth,tileHeight);
+          context.lineWidth = 5;
+          context.strokeStyle = "green";
+          context.strokeRect(viewport.offset[0]+18*tileWidth,viewport.offset[1]+16*tileWidth,tileWidth,tileHeight);
           //hero
-           context.fillStyle = "red";
-           context.fillRect(viewport.offset[0]+player.position[0],viewport.offset[1]+player.position[1],player.dimensions[0],player.dimensions[1]);
+           drawAsh();
           scoreUpdate();
           coinPicker();
           endGameCheck();
