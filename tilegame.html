@@ -60,13 +60,15 @@
         var audio = new Audio();
         audio.src = "Guardians [Action Music].mp3";
     window.addEventListener("load",playAudio);
-        function playAudio(){
+        function playAudio()
+        {
            audio.loop = true;
            audio.play();
         }
         var music = document.getElementById("music");
     music.addEventListener("click",funmusic);
-        function funmusic(){
+        function funmusic()
+        {
             if(music.childNodes[0].textContent === "Mute"){
               audio.pause();
               music.childNodes[0].textContent = "Music";
@@ -75,10 +77,11 @@
               audio.play();
               music.childNodes[0].textContent = "Mute";
             }
-    }
+        }
     //end of audio js
     var timeleftcounter = 30;
-        function timer(){
+        function timer()
+        {
            var timerElement = document.getElementById("timeleft");
              if(timeleftcounter>=10){timerElement.textContent = "Timer Left - 00:"+ timeleftcounter;}
              else {timerElement.textContent = "Timer Left - 00:0"+ timeleftcounter;}
@@ -112,7 +115,8 @@
           0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
-    var viewport = {
+    var viewport = 
+        {
           screen    : [canvas.width,canvas.height],     //canvas in this case
           startTile : [0,0],  //top left of the camera 
           endTile   : [0,0],    //bottom right
@@ -121,10 +125,11 @@
                  this.offset[0]=Math.floor((this.screen[0]/2)-playerx);
                  this.offset[1]=Math.floor((this.screen[1]/2)-playery);
               //player x and y are the pixel pos from dead point of map
-              var tileIndex = [
+              var tileIndex = 
+                [
                  Math.floor(playerx/tileWidth),
                  Math.floor(playery/tileHeight)
-              ];
+                ];
               this.startTile[0]=tileIndex[0]-Math.ceil((this.screen[0]/2)/tileWidth)-1;
               this.startTile[1]=tileIndex[1]-Math.ceil((this.screen[1]/2)/tileHeight)-1;
                 if(this.startTile[0] < 0) { this.startTile[0] = 0; }
@@ -136,7 +141,8 @@
             }
         }
     var player = new Character();
-        function Character(){
+        function Character()
+        {
           this.tileFrom   = [1,1];
           this.tileTo     = [1,1];
           this.dimensions = [30,30];  
@@ -145,7 +151,8 @@
           this.delayMove  = 200;  //time taken to travel bw tiles
           this.score = 0;
         }
-        Character.prototype.placeAt = function(x,y){
+        Character.prototype.placeAt = function(x,y)
+        {
            this.tileTo   = [x,y];
            this.tileFrom = [x,y];
                  this.position = [(tileWidth*x)+(tileWidth-this.dimensions[0])/2,
