@@ -1,330 +1,393 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
-  <title>dungeon</title>
-  <style type="text/css">
-      body{
-        background: url("dungbg.jpg");
-        background-size: cover;
-      }
-    #canvas1{
-      margin-left: 470px;
-      margin-top: 10px;
-      border: gold 2px solid;
-    }
-    .heading{
-      font-family: 'Abril Fatface';
-      text-align: center;
-      color: #bc0707;
-      font-size: 50px;
-      padding: 0;
-    }
-        #buttons{
-          margin-left: 46%;
+    <title>dungeon</title>
+    <style type="text/css">
+        body {
+            background: url("dungbg.jpg");
+            background-size: cover;
         }
-    #timeleft{
-       font-family: 'Abril Fatface';
-       padding: 0; margin: 0;
-       text-align: center;
-       color: gold;
-    }
-    #scores{
-      font-family: 'Abril Fatface';
-      text-align: center;
-      color: gold;
-    }
-    span{font-family: 'Abril Fatface';
-      }
-  </style>
+        #canvas1 {
+            margin-left: 470px;
+            margin-top: 10px;
+            border: gold 2px solid;
+        }
+        .heading {
+            font-family: 'Abril Fatface';
+            text-align: center;
+            color: #bc0707;
+            font-size: 50px;
+            padding: 0;
+        }
+        #buttons {
+            margin-left: 46%;
+        }
+        #timeleft {
+            font-family: 'Abril Fatface';
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            color: gold;
+        }
+        #scores {
+            font-family: 'Abril Fatface';
+            text-align: center;
+            color: gold;
+        }
+        span {
+            font-family: 'Abril Fatface';
+        }
+        ul{
+            font-family: 'Abril Fatface';
+            color: #bc0707; 
+            font-size: 15px;
+        }
+        #rules{
+            font-family: 'Abril Fatface';
+            color: gold; 
+            font-size: 25px;
+        }
+    </style>
 </head>
+
 <body>
-   <h1 class="heading">Dungeon Explorer</h1>
+    <h1 class="heading">Dungeon Explorer</h1>
     <p id="timeleft"></p>
-       <div id="buttons">
-      <button id="music" type="button"><span>Mute</span></button>
-      <button id="start" type="button"><span>Start</span></button>
-       </div>
-   <canvas id="canvas1" width="400px" height="400px"></canvas>
-      <p id="scores">Score: <span id="scoredisplay">0</span></p>
-   <!--js-->
-   <script type="text/javascript">
-    var canvas = document.getElementById("canvas1");
-    var context = canvas.getContext("2d");
-    var fps=30;
-    window.addEventListener("load",function(){
-          context.fillStyle = "#bc0707";
-          context.font = "30px Abril Fatface";
-          context.fillText("Click Start to Begin!",70,200);});
+    <div id="buttons">
+        <button id="music" type="button"><span>Mute</span>
+        </button>
+        <button id="start" type="button"><span>Start</span>
+        </button>
+    </div>
+    <canvas id="canvas1" width="400px" height="400px"></canvas>
+    <p id="scores">Score: <span id="scoredisplay">0</span>
+    </p>
+    <p id="rules">  Rules :
+    </p>
+    <ul>
+        <li>Use the arrows keys to move your character.</li>
+        <li>Your objective is to finish the maze, and also trying to find valuable coins scattered in the dungeon.</li>
+        <li>Each coin gives you a score of 50 while clearing each dungeon gives you 100 points.</li>
+        <li>Score the best out of each dungeon and keep trying</li>
+    </ul>
+    <!--js-->
+    <script type="text/javascript">
+        var canvas = document.getElementById("canvas1");
+        var context = canvas.getContext("2d");
+        var fps = 30;
+        window.addEventListener("load", function() {
+            context.fillStyle = "#bc0707";
+            context.font = "30px Abril Fatface";
+            context.fillText("Click Start to Begin!", 70, 200);
+        });
         //audio js
         var audio = new Audio();
         audio.src = "Guardians [Action Music].mp3";
-    window.addEventListener("load",playAudio);
-        function playAudio()
-        {
-           audio.loop = true;
-           audio.play();
+        window.addEventListener("load", playAudio);
+
+        function playAudio() {
+            audio.loop = true;
+            audio.play();
         }
         var music = document.getElementById("music");
-    music.addEventListener("click",funmusic);
-        function funmusic()
-        {
-            if(music.childNodes[0].textContent === "Mute"){
-              audio.pause();
-              music.childNodes[0].textContent = "Music";
+        music.addEventListener("click", funmusic);
+
+        function funmusic() {
+                if (music.childNodes[0].textContent === "Mute") {
+                    audio.pause();
+                    music.childNodes[0].textContent = "Music";
+                } else {
+                    audio.play();
+                    music.childNodes[0].textContent = "Mute";
+                }
             }
-            else{
-              audio.play();
-              music.childNodes[0].textContent = "Mute";
+            //end of audio js
+            //timer
+        var timeleftcounter = 30;
+
+        function timer() {
+            var timerElement = document.getElementById("timeleft");
+            if (timeleftcounter >= 10) {
+                timerElement.textContent = "Timer Left - 00:" + timeleftcounter;
+            } else {
+                timerElement.textContent = "Timer Left - 00:0" + timeleftcounter;
             }
-        }
-    //end of audio js
-    var timeleftcounter = 30;
-        function timer()
-        {
-           var timerElement = document.getElementById("timeleft");
-             if(timeleftcounter>=10){timerElement.textContent = "Timer Left - 00:"+ timeleftcounter;}
-             else {timerElement.textContent = "Timer Left - 00:0"+ timeleftcounter;}
-               timeleftcounter--;
-             if(timeleftcounter<-1){
+            timeleftcounter--;
+            if (timeleftcounter < -1) {
                 alert("Time Over!");
                 document.location.reload();
-              }
+            }
         }
-    var tileWidth=40,tileHeight=40;
-    var mapWidth=20,mapHeight=20;
-    var map = [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0,
-          0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0,
-          0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0,
-          0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0,
-          0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0,
-          0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0,
-          0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0,
-          0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
-          0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0,
-          0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0,
-          0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0,
-          0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-          0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-          0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 0,
-          0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
-          0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0,
-          0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0,
-          0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        var tileWidth = 40,
+            tileHeight = 40;
+        var mapWidth = 20,
+            mapHeight = 20;
+        var map = [];
+        map[0] = [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0,
+            0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0,
+            0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0,
+            0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0,
+            0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0,
+            0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 0,
+            0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
+            0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0,
+            0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
-    var viewport = 
-        {
-          screen    : [canvas.width,canvas.height],     //canvas in this case
-          startTile : [0,0],  //top left of the camera 
-          endTile   : [0,0],    //bottom right
-          offset    : [0,0],     //pixel of the top left from dead point of map
-            update  : function(playerx,playery){
-                 this.offset[0]=Math.floor((this.screen[0]/2)-playerx);
-                 this.offset[1]=Math.floor((this.screen[1]/2)-playery);
-              //player x and y are the pixel pos from dead point of map
-              var tileIndex = 
-                [
-                 Math.floor(playerx/tileWidth),
-                 Math.floor(playery/tileHeight)
+        map[1] = [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+            0, 1, 1, 1, 2, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+            0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+            0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+            0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0,
+            0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0,
+            0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0,
+            0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+            0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ];
+        var viewport = {
+            screen: [canvas.width, canvas.height], //canvas in this case
+            startTile: [0, 0], //top left of the camera 
+            endTile: [0, 0], //bottom right
+            offset: [0, 0], //pixel of the top left from dead point of map
+            update: function(playerx, playery) {
+                this.offset[0] = Math.floor((this.screen[0] / 2) - playerx);
+                this.offset[1] = Math.floor((this.screen[1] / 2) - playery);
+                //player x and y are the pixel pos from dead point of map
+                var tileIndex = [
+                    Math.floor(playerx / tileWidth),
+                    Math.floor(playery / tileHeight)
                 ];
-              this.startTile[0]=tileIndex[0]-Math.ceil((this.screen[0]/2)/tileWidth)-1;
-              this.startTile[1]=tileIndex[1]-Math.ceil((this.screen[1]/2)/tileHeight)-1;
-                if(this.startTile[0] < 0) { this.startTile[0] = 0; }
-                if(this.startTile[1] < 0) { this.startTile[1] = 0; }
-              this.endTile[0]=tileIndex[0]+Math.ceil((this.screen[0]/2)/tileWidth)+1;
-              this.endTile[1]=tileIndex[1]+Math.ceil((this.screen[1]/2)/tileHeight)+1;
-                if(this.endTile[0] >= mapWidth) { this.endTile[0] = mapWidth; }
-                if(this.endTile[1] >= mapHeight) { this.endTile[1] = mapHeight; }
-            }
-        }
-    var player = new Character();
-        function Character()
-        {
-          this.tileFrom   = [1,1];
-          this.tileTo     = [1,1];
-          this.dimensions = [35,35];  
-          this.timeMoved  = 0;  //current time take after moving
-          this.position   = [45,45]; // in pixel
-          this.delayMove  = 200;  //time taken to travel bw tiles
-          this.score = 0;
-        }
-        Character.prototype.placeAt = function(x,y)
-        {
-           this.tileTo   = [x,y];
-           this.tileFrom = [x,y];
-                 this.position = [(tileWidth*x)+(tileWidth-this.dimensions[0])/2,
-                                  (tileHeight*y)+(tileHeight-this.dimensions[1])/2];
-        }
-        Character.prototype.updateMotion = function(t){  //t is currenttime
-                                            if(this.tileFrom[0]==this.tileTo[0]&&this.tileFrom[1]==this.tileTo[1]){return false;}
-                                            if((t-this.timeMoved)>=this.delayMove)
-                                            {    //t-this.timeMoved is the amount of time that has passed since the Character began
-                                             this.placeAt(this.tileTo[0], this.tileTo[1]);
-                                            }
-                                            else
-                                            {
-                                             this.position[0] = (this.tileFrom[0]*tileWidth) + ((tileWidth-this.dimensions[0])/2);
-                                             this.position[1] = (this.tileFrom[1]*tileHeight) + ((tileHeight-this.dimensions[1])/2);
-                                              if(this.tileTo[0]!=this.tileFrom[0])
-                                              {
-                                                 var distanceMoved = (tileWidth/this.delayMove)*(t-this.timeMoved);
-                                                  if(this.tileTo[0]<this.tileFrom[0]){this.position[0]-=distanceMoved;}
-                                                  else {this.position[0]+=distanceMoved;}
-                                              }
-                                              if(this.tileTo[1]!=this.tileFrom[1])
-                                              {
-                                                 var distanceMoved = (tileHeight/this.delayMove)*(t-this.timeMoved);
-                                                  if(this.tileTo[1]<this.tileFrom[1]){this.position[1]-=distanceMoved;}
-                                                  else {this.position[1]+=distanceMoved;}
-                                              }
-                                            }
-                                             return true;
-                                          }
-    var keyDown = 
-        {
-          37 : false,    //left
-          38 : false,    //up
-          39 : false,    //right
-          40 : false     //down
-        };
-    document.addEventListener("keydown",keyDownHandler);
-    document.addEventListener("keyup",keyUpHandler);
-        function keyDownHandler(e)
-        {
-          if(e.keyCode>=37&&e.keyCode<=40)
-          {
-            keyDown[e.keyCode]=true;
-          }
-        }
-        function keyUpHandler(e)
-        {
-          if(e.keyCode>=37&&e.keyCode<=40)
-          {
-            keyDown[e.keyCode]=false;
-          }
-        }
-        function indexCalculation(x,y)
-        {
-          return (y*mapHeight)+x;
-        }
-        //coin sprite
-    var frame = 0;
-    var coin = new Image();
-    coin.src = "coin-sprite-animation-sprite-sheet.png";
-        function drawcoin(x,y)
-        {
-            context.clearRect(viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,tileWidth,tileHeight);
-            context.fillStyle = "black";
-            context.fillRect(viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,tileWidth,tileHeight);
-               context.drawImage(coin,frame,0,44,40,viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,tileWidth,tileHeight);
-            frame = (frame+44)%440;
-        }
-        //hero
-    var frameAsh = 0,directionFrame = 0;
-    var ash = new Image();
-    ash.src = "ashsprite.png";
-        function drawAsh()
-        {
-          var currentTime = Date.now();
-          context.clearRect(viewport.offset[0]+player.position[0],viewport.offset[1]+player.position[1],player.dimensions[0],player.dimensions[1]);
-          context.drawImage(ash,frameAsh,directionFrame,68,72,viewport.offset[0]+player.position[0],viewport.offset[1]+player.position[1],player.dimensions[0],player.dimensions[1]);
-          if(player.updateMotion(currentTime))
-          {
-           frameAsh = (frameAsh+68)%272;
-          }
-        }
-        function scoreUpdate()
-        {
-          var scoreSpan = document.getElementById("scoredisplay");
-          scoreSpan.textContent = player.score;
-        }
-        function coinPicker()
-        {
-            if(map[indexCalculation(player.tileFrom[0],player.tileFrom[1])]==2)
-            {
-              map[indexCalculation(player.tileFrom[0],player.tileFrom[1])]=1;
-              player.score+=50;
-            }
-        }
-        function endGameCheck()
-        {
-          if(player.tileFrom[0]==18&&player.tileFrom[1]==16)
-          {
-            player.score+=100;
-            alert("You won! Your score is "+player.score);
-            document.location.reload();
-          }
-        }
-        function Draw()
-        {
-          var x,y;
-          var currentTime = Date.now();
-          if(!player.updateMotion(currentTime))
-          {  
-            //up and down 
-            if(keyDown[38]&&map[indexCalculation(player.tileFrom[0],player.tileFrom[1]-1)])
-              {
-                player.tileTo[1]-=1;
-                directionFrame = 216;
-              }
-            else if(keyDown[40]&&map[indexCalculation(player.tileFrom[0],player.tileFrom[1]+1)])
-                   {
-                    player.tileTo[1]+=1;
-                    directionFrame = 0;
-                   }
-            //left and right
-            if(keyDown[37]&&map[indexCalculation(player.tileFrom[0]-1,player.tileFrom[1])])
-              {
-                player.tileTo[0]-=1;
-                directionFrame = 72;
-              }
-            else if(keyDown[39]&&map[indexCalculation(player.tileFrom[0]+1,player.tileFrom[1])])
-                  {
-                    player.tileTo[0]+=1;
-                    directionFrame = 144;
-                  }
-            if(player.tileFrom[0]!=player.tileTo[0]||player.tileFrom[1]!=player.tileTo[1])
-              {player.timeMoved=currentTime;}
-          }
-          viewport.update(player.position[0]+(player.dimensions[0]/2),
-                          player.position[1]+(player.dimensions[1]/2));
-          context.fillStyle="black";
-          context.fillRect(0,0,canvas.width,canvas.height);
-          for(y = viewport.startTile[1]; y <= viewport.endTile[1]; ++y)
-          {
-            for (x = viewport.startTile[0]; x <= viewport.endTile[0]; ++x)   //culling
-                {
-                   switch(map[indexCalculation(x,y)])
-                   {
-                     case 0: context.fillStyle = "brown";break;
-                     case 1: context.fillStyle = "black";break;
-                     case 2: drawcoin(x,y);
-                   }
-                   if(map[indexCalculation(x,y)]!=2)
-                   {
-                   context.fillRect(viewport.offset[0]+x*tileWidth,viewport.offset[1]+y*tileWidth,tileWidth,tileHeight);
-                   }
+                this.startTile[0] = tileIndex[0] - Math.ceil((this.screen[0] / 2) / tileWidth) - 1;
+                this.startTile[1] = tileIndex[1] - Math.ceil((this.screen[1] / 2) / tileHeight) - 1;
+                if (this.startTile[0] < 0) {
+                    this.startTile[0] = 0;
                 }
-          }
-          context.lineWidth = 5;
-          context.strokeStyle = "green";
-          context.strokeRect(viewport.offset[0]+18*tileWidth,viewport.offset[1]+16*tileWidth,tileWidth,tileHeight);
-          //hero
-           drawAsh();
-          scoreUpdate();
-          coinPicker();
-          endGameCheck();
+                if (this.startTile[1] < 0) {
+                    this.startTile[1] = 0;
+                }
+                this.endTile[0] = tileIndex[0] + Math.ceil((this.screen[0] / 2) / tileWidth) + 1;
+                this.endTile[1] = tileIndex[1] + Math.ceil((this.screen[1] / 2) / tileHeight) + 1;
+                if (this.endTile[0] >= mapWidth) {
+                    this.endTile[0] = mapWidth;
+                }
+                if (this.endTile[1] >= mapHeight) {
+                    this.endTile[1] = mapHeight;
+                }
+            }
         }
-    var startButton = document.getElementById("start");
-    startButton.addEventListener("click",main);
-        function main()
-        {
-        setInterval(timer,1000);
-        setInterval(Draw,1000/fps);
+        var player = new Character();
+
+        function Character() {
+            this.tileFrom = [1, 1];
+            this.tileTo = [1, 1];
+            this.dimensions = [35, 35];
+            this.timeMoved = 0; //current time take after moving
+            this.position = [45, 45]; // in pixel
+            this.delayMove = 300; //time taken to travel bw tiles
+            this.score = 0;
+            this.level = 0;
+            this.frameAsh = 0;
+            this.directionFrame = 0;
         }
-  </script>
+        Character.prototype.placeAt = function(x, y) {
+            this.tileTo = [x, y];
+            this.tileFrom = [x, y];
+            this.position = [(tileWidth * x) + (tileWidth - this.dimensions[0]) / 2, (tileHeight * y) + (tileHeight - this.dimensions[1]) / 2];
+        }
+        Character.prototype.updateMotion = function(t) { //t is currenttime
+            if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+                return false;
+            }
+            if ((t - this.timeMoved) >= this.delayMove) { //t-this.timeMoved is the amount of time that has passed since the Character began
+                this.placeAt(this.tileTo[0], this.tileTo[1]);
+            } else {
+                this.position[0] = (this.tileFrom[0] * tileWidth) + ((tileWidth - this.dimensions[0]) / 2);
+                this.position[1] = (this.tileFrom[1] * tileHeight) + ((tileHeight - this.dimensions[1]) / 2);
+                if (this.tileTo[0] != this.tileFrom[0]) {
+                    var distanceMoved = (tileWidth / this.delayMove) * (t - this.timeMoved);
+                    if (this.tileTo[0] < this.tileFrom[0]) {
+                        this.position[0] -= distanceMoved;
+                    } else {
+                        this.position[0] += distanceMoved;
+                    }
+                }
+                if (this.tileTo[1] != this.tileFrom[1]) {
+                    var distanceMoved = (tileHeight / this.delayMove) * (t - this.timeMoved);
+                    if (this.tileTo[1] < this.tileFrom[1]) {
+                        this.position[1] -= distanceMoved;
+                    } else {
+                        this.position[1] += distanceMoved;
+                    }
+                }
+            }
+            return true;
+        }
+        Character.prototype.scoreUpdate = function() {
+            var scoreSpan = document.getElementById("scoredisplay");
+            scoreSpan.textContent = player.score;
+        }
+        var keyDown = {
+            37: false, //left
+            38: false, //up
+            39: false, //right
+            40: false //down
+        };
+        document.addEventListener("keydown", keyDownHandler);
+        document.addEventListener("keyup", keyUpHandler);
+
+        function keyDownHandler(e) {
+            e.preventDefault();
+            if (e.keyCode >= 37 && e.keyCode <= 40) {
+                keyDown[e.keyCode] = true;
+            }
+        }
+
+        function keyUpHandler(e) {
+            if (e.keyCode >= 37 && e.keyCode <= 40) {
+                keyDown[e.keyCode] = false;
+            }
+        }
+
+        function indexCalculation(x, y) {
+            return ((y * mapHeight) + x);
+        }
+
+        //hero
+        var ash = new Image();
+        ash.src = "ashsprite.png";
+        Character.prototype.drawAsh = function() {
+                var currentTime = Date.now();
+                context.clearRect(viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1], player.dimensions[0], player.dimensions[1]);
+                context.drawImage(ash, player.frameAsh, player.directionFrame, 68, 72, viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1], player.dimensions[0], player.dimensions[1]);
+                if (player.updateMotion(currentTime)) {
+                    player.frameAsh = (player.frameAsh + 68) % 272;
+                }
+            }
+            //coin sprite    
+        var coin = new powerup();
+
+        function powerup() {
+            this.frame = 0;
+            this.Sprite = new Image();
+        }
+        coin.Sprite.src = "coin-sprite-animation-sprite-sheet.png";
+        powerup.prototype.drawCoin = function(x, y) {
+            context.clearRect(viewport.offset[0] + x * tileWidth, viewport.offset[1] + y * tileWidth, tileWidth, tileHeight);
+            context.fillStyle = "black";
+            context.fillRect(viewport.offset[0] + x * tileWidth, viewport.offset[1] + y * tileWidth, tileWidth, tileHeight);
+            context.drawImage(coin.Sprite, coin.frame, 0, 44, 40, viewport.offset[0] + x * tileWidth, viewport.offset[1] + y * tileWidth, tileWidth, tileHeight);
+            coin.frame = (coin.frame + 44) % 440;
+        }
+        powerup.prototype.coinPicker = function() {
+            if (map[player.level][indexCalculation(player.tileFrom[0], player.tileFrom[1])] == 2) {
+                map[player.level][indexCalculation(player.tileFrom[0], player.tileFrom[1])] = 1;
+                player.score += 50;
+            }
+        }
+
+        function endGameCheck() {
+            if (player.tileFrom[0] == 18 && player.tileFrom[1] == 16) {
+                player.score += 100;
+                if (player.level == 0) {
+                    keyDown[38] = false;
+                    alert("You completed level 0");
+                    player.level = 1;
+                    timeleftcounter = 30;
+                    player.placeAt(1, 1);
+                } else {
+                    alert("You Finished all levels! Your score is: " + player.score);
+                    document.location.reload();
+                }
+            }
+        }
+
+        function Draw() {
+            var x, y;
+            var currentTime = Date.now();
+            if (!player.updateMotion(currentTime)) {
+                //up and down 
+                if (keyDown[38] && map[player.level][indexCalculation(player.tileFrom[0], player.tileFrom[1] - 1)]) {
+                    player.tileTo[1] -= 1;
+                    player.directionFrame = 216;
+                } else if (keyDown[40] && map[player.level][indexCalculation(player.tileFrom[0], player.tileFrom[1] + 1)]) {
+                    player.tileTo[1] += 1;
+                    player.directionFrame = 0;
+                }
+                //left and right
+                if (keyDown[37] && map[player.level][indexCalculation(player.tileFrom[0] - 1, player.tileFrom[1])]) {
+                    player.tileTo[0] -= 1;
+                    player.directionFrame = 72;
+                } else if (keyDown[39] && map[player.level][indexCalculation(player.tileFrom[0] + 1, player.tileFrom[1])]) {
+                    player.tileTo[0] += 1;
+                    player.directionFrame = 144;
+                }
+                if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
+                    player.timeMoved = currentTime;
+                }
+            }
+            viewport.update(player.position[0] + (player.dimensions[0] / 2),
+                player.position[1] + (player.dimensions[1] / 2));
+            context.fillStyle = "black";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            for (y = viewport.startTile[1]; y <= viewport.endTile[1]; ++y) {
+                for (x = viewport.startTile[0]; x <= viewport.endTile[0]; ++x) {
+                    switch (map[player.level][indexCalculation(x, y)]) {
+                        case 0:
+                            context.fillStyle = "brown";
+                            break;
+                        case 1:
+                            context.fillStyle = "black";
+                            break;
+                        case 2:
+                            coin.drawCoin(x, y);
+                    }
+                    if (map[player.level][indexCalculation(x, y)] != 2) {
+                        context.fillRect(viewport.offset[0] + x * tileWidth, viewport.offset[1] + y * tileWidth, tileWidth, tileHeight);
+                    }
+                }
+            }
+            context.lineWidth = 5;
+            context.strokeStyle = "green";
+            context.strokeRect(viewport.offset[0] + 18 * tileWidth, viewport.offset[1] + 16 * tileWidth, tileWidth, tileHeight);
+            //hero
+            player.drawAsh();
+            player.scoreUpdate();
+            coin.coinPicker();
+            endGameCheck();
+        }
+        var startButton = document.getElementById("start");
+        startButton.addEventListener("click", main);
+
+        function main() {
+            setInterval(timer, 1000);
+            setInterval(Draw, 1000 / fps);
+        }
+    </script>
 </body>
+
 </html>
